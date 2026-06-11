@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: architecto-fixture
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Venumadhavmule/architecto-iac-fixture.git
+    targetRevision: main
+    path: k8s
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: architecto-fixture
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

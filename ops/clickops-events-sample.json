@@ -1,0 +1,18 @@
+[
+  {
+    "eventSource": "ec2.amazonaws.com",
+    "eventName": "AuthorizeSecurityGroupIngress",
+    "actor": "demo-admin@example.com",
+    "resource": "aws_security_group.web",
+    "risk": "high",
+    "summary": "Manual ingress change opened SSH to the world."
+  },
+  {
+    "eventSource": "s3.amazonaws.com",
+    "eventName": "PutBucketAcl",
+    "actor": "demo-admin@example.com",
+    "resource": "aws_s3_bucket.logs",
+    "risk": "medium",
+    "summary": "Manual ACL change made the logs bucket public."
+  }
+]

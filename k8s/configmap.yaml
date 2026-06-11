@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: architecto-demo-config
+  namespace: architecto-fixture
+data:
+  FEATURE_FLAG_DRIFT_DEMO: "true"
+  OWNER_TEAM: platform
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: architecto-demo-secret
+  namespace: architecto-fixture
+type: Opaque
+stringData:
+  DEMO_PASSWORD: ChangeMe123!

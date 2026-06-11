@@ -1,4 +1,17 @@
 name: architecto-fixture
 runtime: nodejs
 description: Minimal Pulumi project marker for Architecto IaC import testing.
-
+config:
+  aws:region: us-east-1
+resources:
+  logsBucket:
+    type: aws:s3/bucket:Bucket
+    properties:
+      acl: public-read
+      tags:
+        Environment: dev
+        Owner: architecto
+  workerRole:
+    type: aws:iam/role:Role
+    properties:
+      assumeRolePolicy: "{}"

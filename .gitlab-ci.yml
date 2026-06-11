@@ -1,0 +1,16 @@
+stages:
+  - validate
+  - plan
+
+terraform_validate:
+  stage: validate
+  image: hashicorp/terraform:1.6
+  script:
+    - terraform -chdir=terraform init -backend=false
+    - terraform -chdir=terraform validate
+
+terraform_plan:
+  stage: plan
+  image: hashicorp/terraform:1.6
+  script:
+    - terraform -chdir=terraform plan -input=false

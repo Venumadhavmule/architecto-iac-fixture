@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: architecto-demo-cache
+  namespace: architecto-fixture
+spec:
+  serviceName: architecto-demo-cache
+  replicas: 1
+  selector:
+    matchLabels:
+      app: architecto-demo-cache
+  template:
+    metadata:
+      labels:
+        app: architecto-demo-cache
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - name: cache-data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: cache-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi

@@ -10,3 +10,8 @@ variable "project_name" {
   default     = "architecto-fixture"
 }
 
+variable "vpc_cidr_block" {
+  description = "CIDR range for fixture networking."
+  type        = string
+  default     = "10.42.0.0/16"
+}

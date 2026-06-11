@@ -1,11 +1,22 @@
 - name: Architecto fixture web server
   hosts: web
   become: true
+  vars:
+    app_owner: platform
+    audit_log_path: /var/log/architecto-fixture.log
+  roles:
+    - common
   tasks:
     - name: Install nginx
       ansible.builtin.package:
         name: nginx
         state: present
+
+    - name: Write demo audit marker
+      ansible.builtin.copy:
+        dest: "{{ audit_log_path }}"
+        content: "architecto fixture managed by {{ app_owner }}\n"
+        mode: "0644"
 
     - name: Ensure nginx is running
       ansible.builtin.service:
@@ -13,3 +24,11 @@
         state: started
         enabled: true
 
+- name: Architecto fixture database host
+  hosts: db
+  become: true
+  tasks:
+    - name: Install postgres client package
+      ansible.builtin.package:
+        name: postgresql-client
+        state: present

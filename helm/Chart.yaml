@@ -4,4 +4,12 @@ description: Minimal Helm chart for Architecto IaC import testing.
 type: application
 version: 0.1.0
 appVersion: "1.0.0"
-
+keywords:
+  - web
+  - api
+  - architecto
+dependencies:
+  - name: redis
+    version: "20.1.0"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled

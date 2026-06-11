@@ -2,12 +2,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: architecto-demo-api
+  namespace: architecto-fixture
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: architecto-demo-api
   ports:
     - name: http
       port: 80
       targetPort: 8080
-

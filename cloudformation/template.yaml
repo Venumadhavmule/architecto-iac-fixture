@@ -1,5 +1,22 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Minimal CloudFormation template for Architecto IaC import testing.
+Description: Compact CloudFormation template for Architecto dependency, cost, and governance testing.
+
+Parameters:
+  EnvironmentName:
+    Type: String
+    Default: dev
+  EnableQueueAlarm:
+    Type: String
+    Default: "true"
+    AllowedValues:
+      - "true"
+      - "false"
+
+Conditions:
+  CreateQueueAlarm:
+    Fn::Equals:
+      - Ref: EnableQueueAlarm
+      - "true"
 
 Resources:
   DemoBucket:
@@ -7,17 +24,78 @@ Resources:
     Properties:
       VersioningConfiguration:
         Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
       Tags:
         - Key: Environment
-          Value: dev
+          Value:
+            Ref: EnvironmentName
 
   DemoQueue:
     Type: AWS::SQS::Queue
     Properties:
       VisibilityTimeout: 30
+      Tags:
+        - Key: Environment
+          Value:
+            Ref: EnvironmentName
+
+  DemoQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    DependsOn:
+      - DemoQueue
+    Properties:
+      Queues:
+        - Ref: DemoQueue
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: "sqs:*"
+            Resource:
+              Fn::GetAtt:
+                - DemoQueue
+                - Arn
+
+  DemoQueueDepthAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: CreateQueueAlarm
+    Properties:
+      AlarmDescription: Demo queue backlog alarm for governance flow testing.
+      Namespace: AWS/SQS
+      MetricName: ApproximateNumberOfMessagesVisible
+      Dimensions:
+        - Name: QueueName
+          Value:
+            Fn::GetAtt:
+              - DemoQueue
+              - QueueName
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 10
+      ComparisonOperator: GreaterThanThreshold
+
+  NestedNetworkStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://example.com/architecto-fixture/network.yaml
+      Parameters:
+        EnvironmentName:
+          Ref: EnvironmentName
 
 Outputs:
   BucketName:
     Description: Demo bucket name.
-    Value: !Ref DemoBucket
-
+    Value:
+      Ref: DemoBucket
+  QueueArn:
+    Description: Demo queue ARN.
+    Value:
+      Fn::GetAtt:
+        - DemoQueue
+        - Arn
