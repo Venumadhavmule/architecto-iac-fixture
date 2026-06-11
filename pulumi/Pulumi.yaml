@@ -1,0 +1,4 @@
+name: architecto-fixture
+runtime: nodejs
+description: Minimal Pulumi project marker for Architecto IaC import testing.
+

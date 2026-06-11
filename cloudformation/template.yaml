@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Minimal CloudFormation template for Architecto IaC import testing.
+
+Resources:
+  DemoBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: Environment
+          Value: dev
+
+  DemoQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 30
+
+Outputs:
+  BucketName:
+    Description: Demo bucket name.
+    Value: !Ref DemoBucket
+
